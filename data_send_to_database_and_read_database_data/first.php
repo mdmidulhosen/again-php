@@ -67,19 +67,23 @@ ob_start();
     
   <div class="class col-md-6">
 
+      <div id="">
       <h1>Add a new category</h1>
 
-      <form method="POST">
-        <div class="form-group my-3">
-          <input type="text" required="required" name="cate_name" placeholder="Name" class="form-control">
-        </div>
-        <div class="form-group my-3">
-          <textarea rows="3" required="required" name="cate_description" placeholder="Description" class="form-control"></textarea>
-        </div>
-        <div class="form-group my-3">
-          <input type="submit" name="add_cate" value="Add Category" class="btn btn-md btn-md btn-success">
-        </div>
-      </form> 
+        <form method="POST" name="add_new_form">
+          <div class="form-group my-3">
+            <input type="text" required="required" name="cate_name" placeholder="Name" class="form-control">
+          </div>
+          <div class="form-group my-3">
+            <textarea rows="3" required="required" name="cate_description" placeholder="Description" class="form-control"></textarea>
+          </div>
+          <div class="form-group my-3">
+            <input type="submit" name="add_cate" value="Add Category" class="btn btn-md btn-md btn-success">
+          </div>
+        </form> 
+      </div>
+
+     
 
       <?php
       if(isset($_GET['edit_ID'])){
@@ -174,7 +178,24 @@ ob_start();
             <th ><?php echo $category_description;?></th>
             <th >
               <a href="first.php?edit_ID=<?php echo $category_id;?>"><i class="fa-solid fa-pen-to-square btn btn-success btn-sm"></i></a>
-             <a href="first.php?delete_ID=<?php echo $category_id;?>"><i class="fa-solid fa-trash btn btn-danger btn-sm"></i></a>
+             <a data-bs-toggle="modal" data-bs-target="#modal_delete_ID<?php echo $category_id?>"><i class="fa-solid fa-trash btn btn-danger btn-sm"></i></a>
+            
+             <!-- Modal -->
+              <div class="modal fade" id="modal_delete_ID<?php echo $category_id?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header text-center" style="margin: 0px auto;">
+                      <h2 class="text-dark">Are you sure?</h2>
+                    </div>
+                    <div class="modal-body text-center">
+                    <button type="button" class="btn btn-success btn-md" data-bs-dismiss="modal">Cancel</button>
+                      <a href="first.php?delete_ID=<?php echo $category_id;?>" type="button" class="btn btn-danger btn-md">Delete</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
             </th>
           </tr>
             
@@ -249,5 +270,9 @@ ob_start();
 </div>
 
 <?php ob_end_flush();?>
+
+ <!-- Option 1: Bootstrap Bundle with Popper -->
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+ 
   </body>
 </html>
