@@ -1,4 +1,8 @@
-<?php include "connection.php"?>
+<?php 
+ob_start();
+include "connection.php"
+
+?>
 
 
 <!DOCTYPE html>
