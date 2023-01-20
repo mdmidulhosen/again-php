@@ -34,8 +34,8 @@
             </a>
             <div class="collapse" id="users">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Add New</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">View All</a></li>
+                <li class="nav-item"> <a class="nav-link" href="users.php?do=Add">Add New</a></li>
+                <li class="nav-item"> <a class="nav-link" href="users.php?do=View">View All</a></li>
               </ul>
             </div>
           </li>

@@ -176,7 +176,7 @@
 
                                 <?php 
                                 
-                               $read_query = "SELECT * FROM category ";
+                               $read_query = "SELECT * FROM category WHERE is_parent = 0 ";
                                $result_query = mysqli_query($database, $read_query);
                                 
                                while($result_loop = mysqli_fetch_assoc($result_query)){
@@ -185,6 +185,8 @@
                                 $category_name          = $result_loop['category_name'];
                                 $category_description   = $result_loop['category_description'];
                                 $category_status        = $result_loop['category_status'];
+                                $is_parent              = $result_loop['is_parent'];
+                                $parent_id              = $result_loop['parent_id'];
 
 
                                 ?>
