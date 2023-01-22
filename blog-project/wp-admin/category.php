@@ -242,14 +242,13 @@
                                             
                                             if(isset($_GET['delete_ID'])){
                                                 $delete_id = $_GET['delete_ID'];
+                                                $tableName = 'category';
+                                                $primaryKey = 'category_id';
+                                                $redirectLocation = 'category.php';
+                                               delete($tableName,$primaryKey,$delete_id,$redirectLocation);
 
-                                               $delete_query = "DELETE FROM category WHERE category_id = $delete_id";
-                                               $delete_result = mysqli_query($database, $delete_query);
-                                               if($delete_result){
-                                                header('Location: category.php');
-                                               }else{
-                                                die('Category delete error'.mysqli_error($database));
-                                               }
+                                            //    same work
+                                            //    delete('category','category_id',$delete_id,'category.php');
 
                                             }
                                             

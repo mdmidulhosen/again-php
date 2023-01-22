@@ -108,7 +108,52 @@ $number         = 0;
       <td>
       <a class="btn btn-xs btn-success mdi mdi-pencil" href="users.php?user_edit_ID=<?php echo $user_id;?>" type="button"></a>
       <a class="btn btn-xs btn-primary mdi mdi-account-check" href="users.php?user_account_ID=<?php echo $user_id;?>" type="button"></a>
-      <a class="btn btn-xs btn-danger mdi mdi-delete" href="users.php?user_delete_ID=<?php echo $user_id;?>" type="button"></a>
+      <a class="btn btn-xs btn-danger mdi mdi-delete" data-bs-toggle="modal" data-bs-target="#modal_delete_ID<?php echo $user_id?>" type="button"></a>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modal_delete_ID<?php echo $user_id?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center" style="margin: 0px auto;">
+                <h2 class="text-dark">Are you sure?</h2>
+                </div>
+                <div class="modal-body text-center">
+                <button type="button" class="btn btn-success btn-md" data-bs-dismiss="modal">Cancel</button>
+                <a href="users.php?user_delete_ID=<?php echo $user_id;?>" type="button" class="btn btn-danger btn-md">Delete</a>
+
+                <?php 
+                
+                
+                if(isset($_GET['user_delete_ID'])){
+                  $user_delete_ID      = $_GET['user_delete_ID'];
+                  // delete user image
+
+                  $image_delete_query  = "SELECT user_image FROM users WHERE user_id = $user_delete_ID";
+                  $image_delete_result = mysqli_query($database, $image_delete_query);
+                  while($image_delete_row = mysqli_fetch_assoc($image_delete_result)){
+                    $user_Image_id = $image_delete_row['user_image'];
+                  }
+                  unlink('images/users_images/'.$user_Image_id);
+
+                  // delete user information
+                  $user_delete_query  = "DELETE FROM users WHERE user_id = $user_delete_ID";
+                  $user_delete_result = mysqli_query($database, $user_delete_query);
+                  if($user_delete_result){
+                    header('Location: users.php');
+                  }else{
+                    die('User delete error'.mysqli_error($database));
+                  }
+                }
+                
+                
+                ?>
+
+                </div>
+            </div>
+          </div>
+      </div>
+
+
       </td>
 </tr>
 
@@ -178,6 +223,13 @@ $number         = 0;
             </div>
 
             <div class="form-group row">
+              <label for="userdob" class="col-sm-3 col-form-label">User Date of Birth</label>
+              <div class="col-sm-9">
+                <input type="date" class="form-control" id="userdob" placeholder="" name="userdob">
+              </div>
+            </div>
+
+            <div class="form-group row">
               <label for="userpassword" class="col-sm-3 col-form-label">User Password</label>
               <div class="col-sm-9">
                 <input type="password" class="form-control" id="userpassword" placeholder="+880" name="userpassword">
@@ -226,7 +278,7 @@ $number         = 0;
               <label for="userimage" class="col-sm-3 col-form-label">User Image</label>
               <div class="col-sm-9">
                 <input type="file" class="form-control" id="userimage" placeholder="+880" name="userimage">
-                <small>Insert only PNG/JPG/JPEG formate image</small>
+                <small>Insert only PNG/JPG/JPEG format image</small>
               </div>
             </div>
 
@@ -242,35 +294,62 @@ $number         = 0;
             $user_name            = $_POST['username'];
             $user_email           = $_POST['useremail'];
             $user_address         = $_POST['useraddress'];
-            $user_biodata         = $_POST['userbiodata'];
+            $user_biodata         = mysqli_real_escape_string($database, $_POST['userbiodata']);
             $user_phone           = $_POST['usernumber'];
+            $userdob              = $_POST['userdob'];
             $user_password        = $_POST['userpassword'];
             $user_gender          = $_POST['usergender'];
             $user_type            = $_POST['usertype'];
             $user_image           = $_FILES['userimage']['name'];
 
-            // $user_image_size      = $_FILES['userimage']['size'];
+            $user_image_size      = $_FILES['userimage']['size'];
             $user_image_temp_name = $_FILES['userimage']['tmp_name'];
 
             $split_name = explode('.', $_FILES['userimage']['name']);
             $extension = end($split_name);
             $lower_extension = strtolower($extension);
-            $image_formate = array('png', 'jgp', 'jpeg');
+            $image_format = array('png','jpg','jpeg');
 
-            if(in_array($lower_extension, $image_formate) === true){
-              echo "This is an image";
+
+            if(in_array($lower_extension, $image_format) === true){
+
+              
+
+              $random_number    = rand();
+              $updated_name     = $random_number.'_'.$user_image;
+              move_uploaded_file($user_image_temp_name, 'images/users_images/'.$updated_name);
+              $hash_password    = sha1($user_password);
+
+              $image_size = getimagesize('images/users_images/32386026_istockphoto-1319763830-612x612.jpg');
+
+              $add_user_query   = "INSERT INTO users (user_name, user_email, user_address, user_image, user_biodata, user_phone, user_birth_date, user_password, user_gender, user_type, user_status) VALUES ('$user_name', '$user_email', '$user_address', '$updated_name', '$user_biodata', '$user_phone', '$userdob', '$hash_password', '$user_gender', '$user_type', 0)";
+              $add_user_result  = mysqli_query($database, $add_user_query);
+              
+              if($add_user_result){
+                header('Location: users.php');
+              }else{
+                die('Add user error!'.mysqli_error($database));
+              }
+
+
             }else{
-               echo "This is not an image";
+               echo "Please upload an jpg, jpeg, png format image!";
             }
 
+
+
           }
+
+            
           
           
           ?>
-
+          
 
         </div>
       </div>
+
+      
 
     <!-- body content end from here -->
     </div>
