@@ -16,15 +16,15 @@ function delete($tableName,$primaryKey,$delete_id,$redirectLocation){
 
 
 // delete function for files
-function deleteFiles(){
+function deleteFiles($tableName,$primaryKey,$user_delete_ID,$databaseFieldName,$fileLocation){
     global $database;
 
-    $image_delete_query  = "SELECT user_image FROM users WHERE user_id = $user_delete_ID";
+    $image_delete_query  = "SELECT $databaseFieldName FROM $tableName WHERE $primaryKey = $user_delete_ID";
     $image_delete_result = mysqli_query($database, $image_delete_query);
     while($image_delete_row = mysqli_fetch_assoc($image_delete_result)){
-      $user_Image_id = $image_delete_row['user_image'];
+      $file_name = $image_delete_row[$databaseFieldName];
     }
-    unlink('images/users_images/'.$user_Image_id);
+    unlink($fileLocation.$file_name);
 
 }
 

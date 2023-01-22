@@ -125,15 +125,14 @@ $number         = 0;
                 
                 
                 if(isset($_GET['user_delete_ID'])){
-                  $user_delete_ID      = $_GET['user_delete_ID'];
                   // delete user image
-
-                  $image_delete_query  = "SELECT user_image FROM users WHERE user_id = $user_delete_ID";
-                  $image_delete_result = mysqli_query($database, $image_delete_query);
-                  while($image_delete_row = mysqli_fetch_assoc($image_delete_result)){
-                    $user_Image_id = $image_delete_row['user_image'];
-                  }
-                  unlink('images/users_images/'.$user_Image_id);
+                  $user_delete_ID      = $_GET['user_delete_ID'];
+                  $tableName          = 'users';
+                  $primaryKey         = 'user_id';
+                  $databaseFieldName  = 'user_image';
+                  $fileLocation       = 'images/users_images/';
+                  $redirectLocation   = 'category.php';
+                  deleteFiles($tableName,$primaryKey,$user_delete_ID,$databaseFieldName,$fileLocation);
 
                   // delete user information
                   $user_delete_query  = "DELETE FROM users WHERE user_id = $user_delete_ID";
