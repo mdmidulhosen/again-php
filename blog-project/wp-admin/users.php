@@ -106,7 +106,7 @@ $number         = 0;
         </select>
       </td>
       <td>
-      <a class="btn btn-xs btn-success mdi mdi-pencil" href="users.php?user_edit_ID=<?php echo $user_id;?>" type="button"></a>
+      <a class="btn btn-xs btn-success mdi mdi-pencil" href="users.php?do=Edit&edit_ID=<?php echo $user_id?><?php echo $user_id;?>" type="button"></a>
       <a class="btn btn-xs btn-primary mdi mdi-account-check" href="users.php?user_account_ID=<?php echo $user_id;?>" type="button"></a>
       <a class="btn btn-xs btn-danger mdi mdi-delete" data-bs-toggle="modal" data-bs-target="#modal_delete_ID<?php echo $user_id?>" type="button"></a>
 
@@ -119,34 +119,7 @@ $number         = 0;
                 </div>
                 <div class="modal-body text-center">
                 <button type="button" class="btn btn-success btn-md" data-bs-dismiss="modal">Cancel</button>
-                <a href="users.php?user_delete_ID=<?php echo $user_id;?>" type="button" class="btn btn-danger btn-md">Delete</a>
-
-                <?php 
-                
-                
-                if(isset($_GET['user_delete_ID'])){
-                  // delete user image
-                  $user_delete_ID      = $_GET['user_delete_ID'];
-                  $tableName          = 'users';
-                  $primaryKey         = 'user_id';
-                  $databaseFieldName  = 'user_image';
-                  $fileLocation       = 'images/users_images/';
-                  $redirectLocation   = 'category.php';
-                  deleteFiles($tableName,$primaryKey,$user_delete_ID,$databaseFieldName,$fileLocation);
-
-                  // delete user information
-                  $user_delete_query  = "DELETE FROM users WHERE user_id = $user_delete_ID";
-                  $user_delete_result = mysqli_query($database, $user_delete_query);
-                  if($user_delete_result){
-                    header('Location: users.php');
-                  }else{
-                    die('User delete error'.mysqli_error($database));
-                  }
-                }
-                
-                
-                ?>
-
+                <a href="users.php?do=Delete&user_delete_ID=<?php echo $user_id;?>" type="button" class="btn btn-danger btn-md">Delete</a>
                 </div>
             </div>
           </div>
@@ -184,7 +157,7 @@ $number         = 0;
             <?php
 
         }
-        elseif($do = 'Add'){
+        elseif($do == 'Add'){
             // add new user
             ?>
             
@@ -356,17 +329,165 @@ $number         = 0;
             <?php
 
         }
-        elseif($do = 'Edit'){
+        elseif($do == 'Edit'){
             // edit user
+         
+            if(isset($GET['edit_ID'])){
+              $editId = $GET['edit_ID'];
+              $userEditQuery  = "SELECT * FROM users WHERE user_id='$editId'";
+              $userEditResult = mysqli_query($database, $userEditQuery);
+              while($editRow = mysqli_fetch_assoc($userEditResult)){
+                $userEdit_id            = $editRow['user_id'];
+                $userEdit_name          = $editRow['user_name'];
+                $userEdit_email         = $editRow['user_email'];
+                $userEdit_address       = $editRow['user_address'];
+                $userEdit_image         = $editRow['user_image'];
+                $userEdit_biodata       = $editRow['user_biodata'];
+                $userEdit_phone         = $editRow['user_phone'];
+                $userEdit_password      = $editRow['user_password'];
+                $userEdit_birth_date    = $editRow['user_birth_date'];
+                $userEdit_gender        = $editRow['user_gender'];
+                $userEdit_type          = $editRow['user_type'];
+                $userEdit_status        = $editRow['user_status'];
+              }
+
+?>
+<!-- edit from start from here -->
+
+<div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Edit User information</h4>
+          <p class="card-description">
+            Edit user info
+          </p>
+
+
+          <form class="forms-sample" method="POST" action="" enctype="multipart/form-data">
+            <div class="form-group row">
+              <label for="username" class="col-sm-3 col-form-label">User Name</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="username" placeholder="Name" name="username">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="useremail" class="col-sm-3 col-form-label">User Email</label>
+              <div class="col-sm-9">
+                <input type="email" class="form-control" id="useremail" placeholder="Email" name="useremail">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="usernumber" class="col-sm-3 col-form-label">User Phone</label>
+              <div class="col-sm-9">
+                <input type="number" class="form-control" id="usernumber" placeholder="+880" name="usernumber">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="userdob" class="col-sm-3 col-form-label">User Date of Birth</label>
+              <div class="col-sm-9">
+                <input type="date" class="form-control" id="userdob" placeholder="" name="userdob">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="userpassword" class="col-sm-3 col-form-label">User Password</label>
+              <div class="col-sm-9">
+                <input type="password" class="form-control" id="userpassword" placeholder="+880" name="userpassword">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="useraddress" class="col-sm-3 col-form-label">User Address</label>
+              <div class="col-sm-9">
+                <textarea name="useraddress" placeholder="Address" id="useraddress" rows="6" style="width: 100%; border:1px solid #eee; border-radius:4px; padding:14px;"></textarea>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="usergender" class="col-sm-3 col-form-label">User Gender</label>
+              <div class="col-sm-9">
+                <select name="usergender" class="form-control" id="usergender">
+                  <option value="">Select Your Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group row">
+              <label for="userbiodata" class="col-sm-3 col-form-label">User Biodata</label>
+              <div class="col-sm-9">
+                <textarea name="userbiodata" placeholder="Biodata" id="userbiodata" rows="6" style="width: 100%; border:1px solid #eee; border-radius:4px; padding:14px;"></textarea>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="usertype" class="col-sm-3 col-form-label">User Role</label>
+              <div class="col-sm-9">
+                <select name="usertype" class="form-control" id="usertype">
+                  <option value="">Select User Role</option>
+                  <option value="Male">Subscriber</option>
+                  <option value="Female">Editor</option>
+                  <option value="Others">Admin</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="userimage" class="col-sm-3 col-form-label">User Image</label>
+              <div class="col-sm-9">
+                <input type="file" class="form-control" id="userimage" placeholder="+880" name="userimage">
+                <small>Insert only PNG/JPG/JPEG format image</small>
+              </div>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary me-2" name="add_user">Submit</button>
+            <button class="btn btn-light">Cancel</button>
+          </form>
+        </div>
+      </div>
+
+<!-- edit from end from here -->
+<?php
+
+
+            }
+
+
+
 
         }
-        elseif($do = 'Update'){
+        elseif($do == 'Update'){
             // update user
 
         }
-        elseif($do = 'Delete'){
+        elseif($do == 'Delete'){
             // delete user
+          
+            if(isset($_GET['user_delete_ID'])){
+              // delete user image
+              $user_delete_ID      = $_GET['user_delete_ID'];
+              $tableName          = 'users';
+              $primaryKey         = 'user_id';
+              $databaseFieldName  = 'user_image';
+              $fileLocation       = 'images/users_images/';
+              $redirectLocation   = 'category.php';
+              deleteFiles($tableName,$primaryKey,$user_delete_ID,$databaseFieldName,$fileLocation);
 
+              // delete user information
+              $user_delete_query  = "DELETE FROM users WHERE user_id = $user_delete_ID";
+              $user_delete_result = mysqli_query($database, $user_delete_query);
+              if($user_delete_result){
+                header('Location: users.php');
+              }else{
+                die('User delete error'.mysqli_error($database));
+              }
+            }
+            
         }
         
     ?>
